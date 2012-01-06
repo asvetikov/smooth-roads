@@ -1,5 +1,6 @@
 import gtk
 import math
+from itertools import islice
 
 class MapView(gtk.DrawingArea):
     def __init__(self):
@@ -53,11 +54,21 @@ class MapView(gtk.DrawingArea):
         cr.move_to(0, 0)
         cr.stroke()
         
-        for path in self.data:
-            x, y = path[0]
-            cr.move_to((w - h) / 2.0 + x * h, h - y * h)
-            for x, y in path:
-                #print x, y
-                cr.line_to((w - h) / 2.0 + x * h, h - y * h)
-            cr.stroke()
-            #print "-------------------\n"
+        for curveType, path in self.data:
+            if curveType == "polyline":
+                x, y = path[0]
+                cr.move_to((w - h) / 2.0 + x * h, h - y * h)
+                for x, y in islice(path, 1, None):
+                    cr.line_to((w - h) / 2.0 + x * h, h - y * h)
+                cr.stroke()
+            if curveType == "bezier":
+                x, y = path[0]
+                cr.move_to((w - h) / 2.0 + x * h, h - y * h)
+                x1, y1 = path[1]
+                x2, y2 = path[2]
+                x3, y3 = path[3]
+                
+                cr.curve_to((w - h) / 2.0 + x1 * h, h - y1 * h,
+                          (w - h) / 2.0 + x2 * h, h - y2 * h,
+                          (w - h) / 2.0 + x3 * h, h - y3 * h)
+                cr.stroke()

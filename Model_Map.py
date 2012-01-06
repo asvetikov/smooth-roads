@@ -1,5 +1,6 @@
 import xml.sax
 import xml.sax.handler
+from math import cos, sin, pi
 
 from Model_Region import *
 
@@ -12,7 +13,10 @@ class OsmMap(xml.sax.handler.ContentHandler):
 
     def startElement(self, name, attrs):
         if(name == "node"):
-            self.node = dict({"id": int(attrs["id"]), "lat": float(attrs["lat"]), "lon": float(attrs["lon"]) });
+            lat, lon = float(attrs["lat"]), float(attrs["lon"])
+            #lon = lon / cos(pi * lat / 180.0)
+            lat = 90.0 * sin(pi * lat / 180.0)
+            self.node = dict({"id": int(attrs["id"]), "lat": lat, "lon": lon });
         if(name == "way"):
             self.way = dict({"id": int(attrs["id"]), "nodes": list()});
         if(name == "nd"):
@@ -56,7 +60,7 @@ class OsmMap(xml.sax.handler.ContentHandler):
             way = self.ways[wayId]
             if self.testWay(region, way):
                 path = self.getPath(region, way)
-                paths.append(path)
+                paths.append(("polyline", path))
         return paths
         
     def testWay(self, region, way):
@@ -70,6 +74,8 @@ class OsmMap(xml.sax.handler.ContentHandler):
         path = list()
         for ref in way["nodes"]:
             node = self.nodes[ref]
-            position = region.getRelativePosition(node["lat"], node["lon"]) 
+            lat, lon = node["lat"], node["lon"]
+            position = region.getRelativePosition(lat, lon)
+            #position = (position[0], position[1] / cos(pi * lat / 180.0))
             path.append(position)
         return path

@@ -37,6 +37,7 @@ def expose_event(widget, event):
     cr.stroke()
     
     bezier = getApproximateBezier(path)
+    print getMaxDeviation(bezier, path)
     # bezier 
     #bezier[0] = path[0]
     #bezier[3] = path[len(path)-1]

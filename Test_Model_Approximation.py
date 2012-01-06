@@ -35,8 +35,8 @@ class TestBezierApproximation(unittest.TestCase):
         self.assertAlmostEqual(1.0, x, 7)
         self.assertAlmostEqual(0.0, y, 7)
         
-        #path = list([(0, 0), (1, 1), (2, 2), (3, 2), (4, 1)])
-        #print getApproximateBezier(path)
+        path = list([(0, 0), (1, 1), (2, 2), (3, 2), (4, 1)])
+        print getApproximateBezier(path)
         
     def test_getIntegral(self):
         result = getIntegral(0, 1, 1, 1, 0, 0, 0, 1)
@@ -45,6 +45,22 @@ class TestBezierApproximation(unittest.TestCase):
         self.assertEqual(0.0, result)
         result = getIntegral(0.0, 1.0, 0.0, 1.00, -1.0, 3.0, -3.0, 1.0)
         self.assertAlmostEqual(1.0/20.0, result, 7)
+    
+    def test_getBezier(self):
+        bezier = [(0, 0), (1, 1),  (1, 1),  (1, 1)]
+        x, y = getBezier(bezier, 0.0)
+        self.assertAlmostEqual(0.0, x, 7)
+        self.assertAlmostEqual(0.0, y, 7)
+        x, y = getBezier(bezier, 1.0)
+        self.assertAlmostEqual(1.0, x, 7)
+        self.assertAlmostEqual(1.0, y, 7)
+    
+    def test_getMaxDeviation(self):
+        path = [(0.0, 0.0), (0.25, 0.25),  (0.5, 0.5),  (0.75, 0.75), (1.0, 1.0)]
+        bezier = getApproximateBezier(path)
+        print bezier
+        deviation = getMaxDeviation(bezier, path)
+        self.assertAlmostEqual(0.0, deviation, 7)
         
 if __name__ == '__main__':
     unittest.main()

@@ -16,6 +16,7 @@ class Application:
     
         # Controllers initialization
         self.mapController = MapController(self.mapView, self.mapModel)
+    
     def execute(self):
         gtk.main()
 
