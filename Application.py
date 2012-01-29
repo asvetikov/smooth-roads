@@ -6,7 +6,9 @@ from Controller_Map import *
 class Application:
     def __init__(self):
         # Models initialization
-        self.mapModel = OsmMap("test.osm")
+        #self.mapModel = OsmMap("small_test.osm")
+        #self.mapModel = OsmMap("cairo.osm")
+        self.mapModel = OsmMap("tromso.osm")
         
         # Views initialization
         self.mainWindowView = MainWindowView()

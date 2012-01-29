@@ -3,6 +3,7 @@ import xml.sax.handler
 from math import cos, sin, pi
 
 from Model_Region import *
+from Model_Approximation import bezierApproximation
 
 class OsmMap(xml.sax.handler.ContentHandler):
     def __init__(self, fileName):
@@ -14,8 +15,6 @@ class OsmMap(xml.sax.handler.ContentHandler):
     def startElement(self, name, attrs):
         if(name == "node"):
             lat, lon = float(attrs["lat"]), float(attrs["lon"])
-            #lon = lon / cos(pi * lat / 180.0)
-            lat = 90.0 * sin(pi * lat / 180.0)
             self.node = dict({"id": int(attrs["id"]), "lat": lat, "lon": lon });
         if(name == "way"):
             self.way = dict({"id": int(attrs["id"]), "nodes": list()});
@@ -54,6 +53,22 @@ class OsmMap(xml.sax.handler.ContentHandler):
             region.south = min(lat, region.south)
         return region
     
+    def getOptRegion(self, width, height):
+        region = self.getMaxRegion()
+        print region.pack()
+        radius = max(region.getHeight(), region.getWidth())
+        lat, lon = region.getCenter()
+        if width > height:
+            ratio = float(height) / float(width)
+            region = Region(lon - radius, lon + radius, lat - ratio * radius, lat + ratio * radius)
+            print region.pack()
+            return region
+            
+        ratio = float(width) / float(height)
+        region = Region(lon - ratio * radius, lon + ratio * radius, lat - radius, lat + radius)
+        print region.pack()
+        return region
+        
     def getRegionData(self, region):
         paths = list()
         for wayId in self.ways:
@@ -61,6 +76,9 @@ class OsmMap(xml.sax.handler.ContentHandler):
             if self.testWay(region, way):
                 path = self.getPath(region, way)
                 paths.append(("polyline", path))
+                #curves = bezierApproximation(path, 0.01)
+                #for curve in curves:
+                #    paths.append(curve)
         return paths
         
     def testWay(self, region, way):
@@ -75,7 +93,9 @@ class OsmMap(xml.sax.handler.ContentHandler):
         for ref in way["nodes"]:
             node = self.nodes[ref]
             lat, lon = node["lat"], node["lon"]
-            position = region.getRelativePosition(lat, lon)
+            #print lat, lon
+            #position = region.getRelativePosition(lat, lon)
+            position = region.getRelativeMercatorPosition(lat, lon)
             #position = (position[0], position[1] / cos(pi * lat / 180.0))
             path.append(position)
         return path

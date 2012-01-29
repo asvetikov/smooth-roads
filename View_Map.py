@@ -62,7 +62,10 @@ class MapView(gtk.DrawingArea):
                     cr.line_to((w - h) / 2.0 + x * h, h - y * h)
                 cr.stroke()
             if curveType == "bezier":
-                x, y = path[0]
+                try:
+                    x, y = path[0]
+                except:
+                    print curveType, path
                 cr.move_to((w - h) / 2.0 + x * h, h - y * h)
                 x1, y1 = path[1]
                 x2, y2 = path[2]

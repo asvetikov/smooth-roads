@@ -11,7 +11,9 @@ class MapController:
         self.mapView.connect("button_press_event", self.button_press_event)
         self.mapView.connect("button_release_event", self.button_release_event)
         self.mapView.connect("scroll_event", self.scroll_event)
-        self.region = self.mapModel.getMaxRegion()
+        x, y, width, height, depth = self.mapView.window.get_geometry()
+        self.region = self.mapModel.getOptRegion(width, height)
+        print self.region.getWidth(), self.region.getHeight()
         self.mapView.data = self.mapModel.getRegionData(self.region)
         print "count ", len(self.mapView.data)
     

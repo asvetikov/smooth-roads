@@ -5,6 +5,7 @@ import math
 from itertools import islice
 
 path = list()
+paths = list()
 
 def button_press_event(widget, event):
     print "press"
@@ -51,6 +52,7 @@ def expose_event(widget, event):
             cr.stroke()
             
 def main():
+    #paths.append()
     window = gtk.Window(gtk.WINDOW_TOPLEVEL)
     window.set_name ("Test Bezier")
 

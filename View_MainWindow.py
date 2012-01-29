@@ -5,7 +5,7 @@ class MainWindowView(gtk.Window):
         super(MainWindowView, self).__init__()
         
         self.set_title("Smooth Roads")
-        self.set_size_request(400, 300)
+        self.set_size_request(400, 400)
         self.set_opacity(0.7)
         self.set_position(gtk.WIN_POS_CENTER)
 

@@ -1,10 +1,24 @@
-from math import sqrt
+from math import sqrt, acos, pi
 from itertools import islice
 
-
-def bezierApproximation(path, maxDeviation):
+def getEgLength(a, b):
+    ax, ay = a
+    bx, by = b
+    return sqrt((ax - bx) ** 2 + (ay - by) ** 2)
+    
+def getAngle(points):
+    a = points[0]
+    b = points[1]
+    c = points[2]
+    ab = getEgLength(a, b)
+    bc = getEgLength(b, c)
+    ac = getEgLength(a, c)
+    return acos((ab**2 + bc ** 2 - ac**2) / (2.0 * ab * bc))
+    
+def bezierApproximation(path, relMaxDeviation):
     result = list()
     subPath = list()
+    maxDeviation = 10; #relMaxDeviation # * getLength(path)
     for node in path:
         subPath.append(node)
         if(len(subPath) < 3):
@@ -12,21 +26,29 @@ def bezierApproximation(path, maxDeviation):
         
         bezier = getApproximateBezier(subPath)
         deviation = getMaxDeviation(bezier, subPath)
-        
-        if deviation < maxDeviation:
-            bezier0 = bezier
+        print "deviation", deviation
+        print "subPath", subPath
+        #angle = getAngle(subPath[len(subPath) - 3 : len(subPath)]) * 180 / pi
+        if deviation < maxDeviation: # and angle > 100:
             continue
 
         if len(subPath) <= 3:
             result.append(("polyline", subPath))
-        else:
-            result.append(("bezier", bezier))
+            subPath = [node]
+            continue
         
-        subPath = list(node)
+        bezier = getApproximateBezier(subPath[0 : len(subPath)])
+        result.append(("bezier", bezier))
+        subPath = subPath[len(subPath) - 2 : len(subPath)]
         
-    if len(subPath) > 0:
-        result.append(("polyline", subPath))
-    return result
+    if len(subPath) < 2:
+       return result
+    
+    #if len(bezier0) > 0:
+    #    result.append(("bezier", bezier0))
+    #else:
+    result.append(("polyline", subPath))
+    return result;
     
 def getBezier(b, t):
     x = b[0][0] * (1 - t) ** 3 + 3 * b[1][0] * t * (1 - t) ** 2 + 3 * b[2][0] * (t ** 2) * (1 - t) + b[3][0] *t **3
