@@ -1,6 +1,3 @@
-<<<<<<< HEAD
-from Model_Bezier import *
-=======
 #
 # Copyright (c) 2012 pinocchio964
 #
@@ -24,7 +21,7 @@ from Model_Bezier import *
 # USE OR OTHER DEALINGS IN THE SOFTWARE.
 #
 
->>>>>>> 7405e9d406c429529376d14d3d6d5657f5af9cb1
+from Model_Bezier import *
 from math import sqrt, acos, pi
 from itertools import islice
 
