@@ -61,6 +61,25 @@ class TestBezierApproximation(unittest.TestCase):
         print bezier
         deviation = getMaxDeviation(bezier, path)
         self.assertAlmostEqual(0.0, deviation, 7)
+
+    def test_smooth(self):
+        curve0 = ('polyline', [(-1.0, 0.0), (0.0, 0.0)])
+        curve1 = ('polyline', [(0.0, 0.0), (0.0, 1.0)])
+        curve0, curve1 = smooth(curve0, curve1)
+        self.assertAlmostEqual(curve0, ('polyline', [(-1.0, 0.0), (0.0, 0.0)]))
+        self.assertAlmostEqual(curve1, ('polyline', [(0.0, 0.0), (0.0, 1.0)]))
+        
+        curve0 = ('polyline', [(-1.0, 0.0), (0.0, 0.0)])
+        curve1 = ('bezier', [(0.0, 0.0), (1.0, -1.0), (1.0, 0.0), (1.0, 1.0)])
+        curve0, curve1 = smooth(curve0, curve1)
+        self.assertAlmostEqual(curve0, ('polyline', [(-1.0, 0.0), (0.0, 0.0)]))
+        self.assertAlmostEqual(curve1, ('bezier', [(0.0, 0.0), (1.0, 0.0), (1.0, 0.0), (1.0, 1.0)]))
+        
+        curve0 = ('bezier', [(-1.0, 1.0), (-1.0, 0.0), (-1.0, -1.0), (0.0, 0.0)])
+        curve1 = ('bezier', [(0.0, 0.0), (1.0, -1.0), (1.0, 0.0), (1.0, 1.0)])
+        curve0, curve1 = smooth(curve0, curve1)
+        self.assertAlmostEqual(curve0, ('bezier', [(-1.0, 1.0), (-1.0, 0.0), (-1.0, 0.0), (0.0, 0.0)]))
+        self.assertAlmostEqual(curve1, ('bezier', [(0.0, 0.0), (1.0, 0.0), (1.0, 0.0), (1.0, 1.0)]))
         
 if __name__ == '__main__':
     unittest.main()
