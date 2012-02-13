@@ -21,7 +21,7 @@ def button_press_event(widget, event):
 def expose_event(widget, event):
     print "expose"
     cr = widget.window.cairo_create()
-    cr.set_source_color(gtk.gdk.Color("#00FF00"))
+    cr.set_source_color(gtk.gdk.Color("#000000"))
     cr.set_line_width(3)
 
     #w = widgetallocation.width; h = self.allocation.height
@@ -40,12 +40,14 @@ def expose_event(widget, event):
     print curves
     for curveType, curve  in curves:
         if curveType == "polyline":
+            cr.set_source_color(gtk.gdk.Color("#000000"))
             x, y = curve[0]
             cr.move_to(x, y)
             for x, y in islice(curve, 1, None):
                 cr.line_to(x, y)
             cr.stroke()
         if curveType == "bezier":
+            cr.set_source_color(gtk.gdk.Color("#00AA00"))
             cr.move_to(curve[0][0], curve[0][1] )
             cr.curve_to(curve[1][0], curve[1][1], curve[2][0], curve[2][1], curve[3][0], curve[3][1])
             cr.stroke()
